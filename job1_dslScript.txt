@@ -1,0 +1,21 @@
+job('Sqream ha job dsl') {
+    
+    scm {
+        git('https://github.com/yaronkalatian/sqream_ha_git.git') {  node -> // is hudson.plugins.git.GitSCM
+            node / gitConfigName('yaronkalatian')
+            node / gitConfigEmail('kalatianyaron@gmail.com')
+        }
+    }
+    triggers {
+        scm('H/35 * * * *')
+    }
+    steps {
+        batchFile("docker build -t compose-flask .")
+        batchFile("echo job build Success ")
+        batchFile("docker-compose up -d")
+        batchFile("docker-compose ps")
+		batchFile("docker tag compose-flask:latest yaronkalatian/yaronkalatian2671/compose-flask:latest")
+		batchFile("docker login -u yaronkalatian -p a7bce4d1-557b-4445-a911-646164ca94d6 ")
+		batchFile("docker push docker.io/yaronkalatian/yaronkalatian2671:compose-flask")
+    }
+}
